@@ -48,5 +48,16 @@ pipeline {
                 }
             }
         }
+
+        stage('Build & Push profileService') {
+            steps {
+                dir('backend/profileService') {
+                    sh """
+                    docker build -t $ECR_URL/k-profile-service:latest .
+                    docker push $ECR_URL/k-profile-service:latest
+                    """
+                }
+            }
+        }
     }
 }
