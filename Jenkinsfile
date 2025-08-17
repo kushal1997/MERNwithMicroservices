@@ -59,5 +59,16 @@ pipeline {
                 }
             }
         }
+
+        stage('Build & Push frontend') {
+            steps {
+                dir('frontend') {
+                    sh """
+                    docker build -t $ECR_URL/k-frontend:latest .
+                    docker push $ECR_URL/k-frontend:latest
+                    """
+                }
+            }
+        }
     }
 }
