@@ -2,9 +2,12 @@ pipeline {
     agent any
 
     environment {
-        AWS_REGION = 'us-west-2'
-        MONGO_URL  = credentials('mongo-url')
+        AWS_REGION    = 'us-west-2'
+        ACCOUNT_ID    = credentials('account-id')
+        MONGO_URL     = credentials('mongo-url')
+        ECR_URL       = "${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
     }
+
 
     stages {
         stage('Checkout Code') {
@@ -31,6 +34,17 @@ pipeline {
 
                         aws ecr get-login-password --region "$AWS_REGION" | docker login --username AWS --password-stdin "$ECR_URL"
                     '''
+                }
+            }
+        }
+
+        stage('Build & Push helloService') {
+            steps {
+                dir('helloService') {
+                    sh """
+                    docker build -t $ECR_URL/k-hello-service:latest .
+                    docker push $ECR_URL/k-hello-service:latest
+                    """
                 }
             }
         }
