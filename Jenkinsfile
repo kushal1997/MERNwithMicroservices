@@ -40,7 +40,7 @@ pipeline {
 
         stage('Build & Push helloService') {
             steps {
-                dir('helloService') {
+                dir('backend/helloService') {
                     sh """
                     docker build -t $ECR_URL/k-hello-service:latest .
                     docker push $ECR_URL/k-hello-service:latest
